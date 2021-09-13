@@ -9,6 +9,7 @@
 """
 
 # global variable of quiz questions and answers dictionary nested within a dictionary. Easy to add and remove topics and questions
+# Definitely - a future version of this program could get this data from a database, or an API, or ... and the rest of the code doesn't change at all. 
 question_bank = {
         'space': {
             'Which planet is closest to the sun? ': 'Mercury',
@@ -34,45 +35,51 @@ def main():
     total_score = 0
     print('\n')
     print('Welcome to our quiz program!\n')
+
+    topic_questions = validate_topic_choice() # input function called  - is this comment needed?
+    total_score = ask_questions(topic_questions, total_score) # processing function called  - is this comment needed? 
+    score_output(total_score, len(topic_questions)) # output results to user, send down both updated total score from ask_questions 
+                                                    # function return and the number of questions in their particular chosen topic area
+    print('\n')
+    print('Thank you for playing!\n')
+
+def validate_topic_choice():
+    # you can probably clean this up, but the input and validation can be combined in one function, otherwise very similar code in main and here. 
     print('You can choose to answer questions from the following categories:\n')
     for topic in question_bank: # loop through topic keys in question_bank library
         print(topic)
         print('-----')
     print('\n')
-    topic_questions = validate_topic_choice() #input function called
-    total_score = ask_questions(topic_questions, total_score) #processing function called
-    score_output(total_score, len(topic_questions)) #output results to user, send down both updated total score from ask_questions 
-                                                    #function return and the number of questions in their particular chosen topic area
-    print('\n')
-    print('Thank you for playing!\n')
-
-def validate_topic_choice():
+    
     topic_requested = input('On which of the above listed topics would you like to be quizzed? ')
     print('\n')
-    while topic_requested.lower() not in question_bank.keys(): #validation based on keys and using .lower() to make sure case isn't a cause of user input being rejected
+    while topic_requested.lower() not in question_bank: # .keys() redundant, using in with a dictionary checks within the keys.  #validation based on keys and using .lower() to make sure case isn't a cause of user input being rejected
         print('Please only choose from one of the below listed categories\n')
         for topic in question_bank:
             print(topic)
         print('\n')
         topic_requested = input('Try again, in which of the above listed topics would you like to be quizzed? ')
     topic_questions = question_bank[topic_requested]
-    return topic_questions #return chosen q/a sub dictionary to main for use in the ask_questions function
+    return topic_questions # return chosen q/a sub dictionary to main for use in the ask_questions function
+
 
 def ask_questions(topic_questions, total_score):
     for question in topic_questions:
         answer = input(question)
         print('\n')
-        if answer.lower() == topic_questions[question].lower(): #checking if user answer matches and removing casing as possible reason for no match
+        if answer.lower() == topic_questions[question].lower(): # checking if user answer matches and removing casing as possible reason for no match
             print('Correct!\n')
             total_score += 1
         else:
             print(f'Sorry, the correct answer is {topic_questions[question]}\n')
-    return total_score #return updated total score to main for use in output function to user
+    # Comment here, and a few others - python style guides recommend one space between the # and the text, for readability. 
+    return total_score # return updated total score to main for use in output function to user
 
-def score_output(total_score, number_of_questions): #several forms of output based on number of questions correctly answered and accounts for variances in number of questions in question_bank
+# I'm a fan of this function. Good example of moving specific detail to its own function. 
+def score_output(total_score, number_of_questions): # several forms of output based on number of questions correctly answered and accounts for variances in number of questions in question_bank
     if total_score == number_of_questions:
         print('You got all the answers correct!')
-    else: #grammatical if/else block accounting for questions vs. question correctness
+    else: # grammatical if/else block accounting for questions vs. question correctness
         if total_score != 1:
             print(f'You answered {total_score} questions correctly')
         else:
